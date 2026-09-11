@@ -31,7 +31,7 @@ public class Main {
                 .pais("Colombia")
                 .email("andres@mail.com")
                 .ciudad("Armenia")
-                .edad(-10)
+                .edad(-12)
                 .activo(true)
                 .build();
 
