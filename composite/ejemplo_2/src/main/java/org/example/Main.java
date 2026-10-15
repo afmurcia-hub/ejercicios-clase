@@ -4,7 +4,9 @@ import org.example.products.Book;
 import org.example.products.VideoGame;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
+                        ),
+                                new Vi// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
 
     public static void main(String[] args) {
@@ -17,9 +19,7 @@ public class Main {
                 new CompositeBox(
                         new CompositeBox(
                                 new Book("2", 200),
-                                new Book("3", 300)
-                        ),
-                        new VideoGame("4", 400),
+                                new Book("3", 300)deoGame("4", 400),
                         new VideoGame("5", 500)
                 )
         );
