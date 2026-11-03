@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patrón Comando - Demostración Web</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px;
+            text-align: center;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .tarjeta {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 450px;
+            width: 100%;
+        }
+        .caja-estado {
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .encendida {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeeba;
+        }
+        .apagada {
+            background-color: #e2e3e5;
+            color: #383d41;
+            border: 2px solid #d6d8db;
+        }
+        .boton {
+            padding: 12px 18px;
+            margin: 6px;
+            font-size: 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+        .boton-encender { background-color: #28a745; color: white; }
+        .boton-encender:hover { background-color: #218838; }
+        .boton-apagar { background-color: #dc3545; color: white; }
+        .boton-apagar:hover { background-color: #c82333; }
+        .boton-deshacer { background-color: #007bff; color: white; }
+        .boton-deshacer:hover { background-color: #0069d9; }
+        .contenedor-historial {
+            text-align: left;
+            margin-top: 25px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        ul { padding-left: 20px; margin-bottom: 0; }
+        li { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+<div class="tarjeta">
+    <h2>Control Remoto (Patrón Comando)</h2>
+    
+    <div id="cajaEstado" class="caja-estado apagada">
+        <span id="textoEstado">🌑 Luz APAGADA</span>
+    </div>
+    
+    <div>
+        <button class="boton boton-encender" onclick="enviarAccion('encender')">💡 Encender</button>
+        <button class="boton boton-apagar" onclick="enviarAccion('apagar')">🌑 Apagar</button>
+        <button class="boton boton-deshacer" onclick="enviarAccion('deshacer')">↩️ Deshacer</button>
+    </div>
+
+    <div class="contenedor-historial">
+        <h4>Historial en el Invocador Java:</h4>
+        <ul id="listaHistorial"></ul>
+    </div>
+</div>
+
+<script>
+    async function enviarAccion(puntoEntrada) {
+        try {
+            const respuesta = await fetch(`/api/${puntoEntrada}`);
+            const datos = await respuesta.json();
+            
+            const cajaEstado = document.getElementById('cajaEstado');
+            const textoEstado = document.getElementById('textoEstado');
+            
+            if (datos.encendida) {
+                cajaEstado.className = 'caja-estado encendida';
+                textoEstado.textContent = '💡 Luz ENCENDIDA (' + datos.ubicacion + ')';
+            } else {
+                cajaEstado.className = 'caja-estado apagada';
+                textoEstado.textContent = '🌑 Luz APAGADA (' + datos.ubicacion + ')';
+            }
+            
+            const listaHistorial = document.getElementById('listaHistorial');
+            if (datos.historial.length === 0) {
+                listaHistorial.innerHTML = '<li><em>Historial vacío</em></li>';
+            } else {
+                listaHistorial.innerHTML = datos.historial.map((comando, indice) => 
+                    `<li><strong>${indice + 1}.</strong> ${comando}</li>`
+                ).join('');
+            }
+        } catch (error) {
+            console.error("Error al comunicarse con la API Java:", error);
+        }
+    }
+
+    // Cargar estado inicial al abrir la página
+    enviarAccion('estado');
+</script>
+</body>
+</html>
